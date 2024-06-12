@@ -12,7 +12,8 @@ This repository contains a collection of PowerShell scripts designed for use wit
 
 ### Backup Monitoring
 
-These scripts monitor the status of Veeam, Cove, and Backup Assist backups and require no extra configuration.
+These scripts monitor the status of Veeam, Cove, and Backup Assist backups.
+These output to a customfield specified in the script.
 
 ### System Cleanup
 
@@ -42,8 +43,8 @@ This script parses the event viewer for failed login attempts and provides a cle
 1. Clone this repository to your local machine:
 
     ```sh
-    git clone https://github.com/yourusername/your-repo-name.git
-    cd your-repo-name
+    git clone https://github.com/fyxtro/NinjaRMM-Scripts.git
+    cd NinjaRMM-Scripts
     ```
 
 2. Ensure you have the necessary permissions to execute the scripts.
@@ -55,6 +56,6 @@ This script parses the event viewer for failed login attempts and provides a cle
 Run the appropriate script for your backup solution:
 
 ```sh
-.\Monitor-VeeamBackup.ps1
-.\Monitor-CoveBackup.ps1
-.\Monitor-BackupAssist.ps1
+.\VeeamBackup.ps1
+.\CoveBackup.ps1
+.\BackupAssist.ps1
