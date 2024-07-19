@@ -12,7 +12,7 @@ function Get-BackupResultsLast24Hours {
     if ($events) {
         foreach ($event in $events) {
             $eventTime = $event.TimeCreated
-            if ($event.Message -match "(Backup job|Backup Copy job|Replication job) '([^']+)' finished with (Success|Failed)") {
+            if ($event.Message -match "(Backup job|Backup Copy job|Replication job) '([^']+)' finished with (Success|Failed|Warning)") {
                 $jobName = $matches[2]
                 $outcome = $matches[3]
 
@@ -35,9 +35,9 @@ function Get-BackupResultsLast24Hours {
             $status = $jobStatuses[$jobName]
             $backupOutput += "Job '$jobName' finished with $($status["Outcome"]):"
             $backupOutput += $status["Messages"][0] # Only get the latest message
-            $backupOutput += "`n"
+            $backupOutput += "`n`n"
 
-            if ($status["Outcome"] -eq "Failed") {
+            if (($status["Outcome"] -eq "Failed") -or ($status["Outcome"] -eq "Warning"))  {
                 $errorFound = $true
             }
         }
