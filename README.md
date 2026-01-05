@@ -1,61 +1,98 @@
-# NinjaRMM Monitoring and Maintenance Scripts
+# NinjaOne Monitoring and Maintenance Scripts
 
 ## Overview
 
-This repository contains a collection of PowerShell scripts designed for use with NinjaRMM to monitor various backup solutions and perform system maintenance tasks. The scripts included are:
+This repository contains a collection of PowerShell scripts intended for use with NinjaOne (formerly NinjaRMM).
+The scripts focus on monitoring backup solutions, parsing event logs, and performing basic system maintenance.
 
-- **Backup Monitoring:** Monitors the status of Veeam, Cove, and Backup Assist backups.
-- **System Cleanup:** Cleans old temporary files and manages download folder content.
-- **Event Log Parsing:** Parses the event viewer for failed login attempts and provides detailed output.
+All monitoring scripts are designed to write structured output to NinjaOne custom fields and to exit with appropriate status codes for alerting.
 
-## Scripts
+## Included Scripts
 
 ### Backup Monitoring
 
-These scripts monitor the status of Veeam, Cove, and Backup Assist backups.
-These output to a customfield specified in the script.
+Scripts for monitoring the health and status of various backup solutions:
+
+- Veeam Backup & Replication  
+  Parses the Veeam event log for job and repository results.  
+  Supports Veeam v12, v13 and future versions.  
+  Determines worst and latest outcome within a configurable time window.  
+  Writes sentinel markers for reliable NinjaOne alerting.
+
+- Cove Data Protection  
+  Uses ClientTool.exe and StatusReport.xml.  
+  Monitors backup service state, datasources, sessions, errors, and Local Speed Vault.  
+  Different thresholds for servers and workstations.  
+  Outputs detailed status to a NinjaOne custom field.
+
+- BackupAssist  
+  Detects BackupAssist installation.  
+  Parses the Windows Application event log for BackupAssist events.  
+  Flags warnings and errors in the last 24 hours.  
+  Reports results to a NinjaOne custom field.
 
 ### System Cleanup
 
-This script performs various system cleanup tasks, including:
+Scripts for basic system maintenance tasks, including:
 
-- Cleaning old temporary files from Teams, Chrome, Edge, and Windows Update.
-- Clearing the recycle bin.
-- Analyzing the downloads folder of each user to check the size and identify files older than 30 days.
-- Removing files older than 30 days from the downloads folders.
+- Cleaning old temporary files from Teams, Chrome, Edge, and Windows Update
+- Clearing the recycle bin
+- Analyzing user Downloads folders
+- Optionally removing files older than a defined threshold
 
 ### Event Log Parsing
 
-This script parses the event viewer for failed login attempts and provides a clear output, including:
+Scripts that parse the Windows Event Log to detect failed login attempts, including:
 
-- IP addresses and hostnames of the failed login attempts.
-- Reason for each failed login attempt.
-- Count of failed login attempts per user and total count.
+- Source IP addresses and hostnames
+- Failure reasons
+- Per-user and total failure counts
+
+## Output and Alerting
+
+- All monitoring scripts write results to a NinjaOne custom field defined inside the script
+- Exit codes are used consistently
+  - Exit 0 indicates success or no issues
+  - Exit 1 indicates warnings, errors, or parsing failures
+- Some scripts include sentinel strings that can be used in NinjaOne alert conditions
 
 ## Usage
 
 ### Prerequisites
 
-- PowerShell must be installed on the system.
+- Windows PowerShell 5.1 or higher
+- NinjaOne agent installed
+- Sufficient permissions to read event logs and application data
+- Administrator privileges where required
 
 ### Installation
 
-1. Clone this repository to your local machine:
-
-    ```sh
-    git clone https://github.com/fyxtro/NinjaRMM-Scripts.git
-    cd NinjaRMM-Scripts
-    ```
-
-2. Ensure you have the necessary permissions to execute the scripts.
-
+Clone the repository using git and change into the directory.
+```
+git clone https://github.com/fyxtro/NinjaRMM-Scripts.git  
+cd NinjaRMM-Scripts
+```
 ### Running the Scripts
 
 #### Backup Monitoring
 
-Run the appropriate script for your backup solution:
-
-```sh
-.\VeeamBackup.ps1
-.\CoveBackup.ps1
+Run the script that matches the backup solution in use.
+```
+.\VeeamBackup.ps1  
+.\CoveBackup.ps1  
 .\BackupAssist.ps1
+```
+Scripts can be executed manually or deployed via NinjaOne as scheduled or on-demand tasks.
+
+## Attribution
+
+Parts of the Cove Data Protection monitoring logic are based on and adapted from:
+
+https://github.com/BackupNerd/Backup-Scripts
+
+These portions remain subject to the original license terms.
+
+## Disclaimer
+
+Scripts are provided as-is without warranty.
+Always test in a non-production environment before deploying at scale.
